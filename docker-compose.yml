@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  db:
+    image: postgres:16
+    container_name: claims-postgres
+    environment:
+      POSTGRES_DB: claims
+      POSTGRES_USER: claims
+      POSTGRES_PASSWORD: claims
+    ports:
+      - "5432:5432"
+    volumes:
+      - claims_pg:/var/lib/postgresql/data
+
+volumes:
+  claims_pg:
