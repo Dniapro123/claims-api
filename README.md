@@ -53,3 +53,19 @@ src/main/java/com/ulad/claims
   model/        JPA entities + enums
   dto/          request/response DTOs
   exception/    custom exceptions + global handler
+
+
+  
+---
+
+## Run locally
+
+### Requirements
+- Java **17** installed (project uses toolchain)
+- No database setup required (H2 is used by default)
+
+### Start the application
+```bash
+./gradlew bootRun
+
+./gradlew test
