@@ -1,6 +1,9 @@
 package com.ulad.claims.model;
 
-
+// Allowed transitions:
+// NEW -> IN_REVIEW / REJECTED
+// IN_REVIEW -> APPROVED / REJECTED
+// APPROVED / REJECTED are terminal states
 
 public enum ClaimStatus {
   NEW,

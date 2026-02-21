@@ -45,17 +45,26 @@ If an invalid transition is requested (e.g. `NEW -> APPROVED`), the API returns 
 
 ---
 
-## Project structure
-src/main/java/com/ulad/claims
-  controller/   REST controllers
-  service/      business logic
-  repository/   Spring Data JPA repositories
-  model/        JPA entities + enums
-  dto/          request/response DTOs
-  exception/    custom exceptions + global handler
+## Architecture (high-level)
+The application follows a simple layered architecture:
 
+- **Controller layer** (`controller/`)  
+  Exposes REST endpoints, validates requests (`@Valid`) and delegates to the service layer.
 
-  
+- **Service layer** (`service/`)  
+  Contains business logic such as the claim **status workflow** and orchestrates repository calls.
+
+- **Repository layer** (`repository/`)  
+  Spring Data JPA repositories + filtering (Specifications).
+
+- **Domain model** (`model/`)  
+  JPA entities and enums (`ClaimStatus`) with explicit transition rules.
+
+- **DTOs** (`dto/`)  
+  Request/response models to keep API contracts stable and avoid exposing entities.
+
+- **Error handling** (`exception/`)  
+  Centralized `@RestControllerAdvice` that returns consistent JSON error responses (400/404/500).
 ---
 
 ## Run locally
