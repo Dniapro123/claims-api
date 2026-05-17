@@ -1,0 +1,8 @@
+CREATE TABLE claims (
+    id BIGSERIAL PRIMARY KEY,
+    title VARCHAR(200) NOT NULL,
+    description VARCHAR(2000) NOT NULL,
+    amount NUMERIC(19, 2) NOT NULL,
+    status VARCHAR(30) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL
+);

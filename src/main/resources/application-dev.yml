@@ -1,15 +1,23 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5433/claims_db
-    username: claims_user
-    password: claims_password
+    url: jdbc:postgresql://127.0.0.1:5433/claims_api_db
+    username: claims_app
+    password: claims_app_password
     driver-class-name: org.postgresql.Driver
 
   jpa:
+    open-in-view: false
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: true
     properties:
       hibernate:
         format_sql: true
+
+  flyway:
+    enabled: true
+    url: jdbc:postgresql://127.0.0.1:5433/claims_api_db
+    user: claims_app
+    password: claims_app_password
+    locations: classpath:db/migration

@@ -23,7 +23,7 @@ public class Claim {
   @Column(nullable = false, length = 2000)
   private String description;
 
-  @Column(nullable = false)
+  @Column(nullable = false, precision = 19, scale = 2)
   private BigDecimal amount;
 
   @Enumerated(EnumType.STRING)
