@@ -11,9 +11,7 @@ Swagger UI:
 
 https://claims-api-production-29fa.up.railway.app/swagger-ui/index.html
 
-API Docs:
 
-https://claims-api-production-29fa.up.railway.app/v3/api-docs
 
 ## Tech Stack
 
