@@ -14,6 +14,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureMockMvc
+
+// Integration test class for the CustomerController. This class tests the creation and retrieval of customers, as well as validating email uniqueness and input validation.
 class CustomerControllerIT extends AbstractIntegrationTest {
 
     @Autowired
@@ -23,6 +25,7 @@ class CustomerControllerIT extends AbstractIntegrationTest {
     ObjectMapper objectMapper;
 
     @Test
+    // Test case to verify that a customer can be created and retrieved successfully.
     void shouldCreateAndFetchCustomer() throws Exception {
         String email = "john.doe." + UUID.randomUUID() + "@example.com";
 
@@ -34,7 +37,7 @@ class CustomerControllerIT extends AbstractIntegrationTest {
               "phone": "+48123123123"
             }
             """.formatted(email);
-
+    // Perform a POST request to create a new customer and verify the response contains the expected data.
         String createdBody = mvc.perform(post("/api/customers")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(createJson))
@@ -47,7 +50,7 @@ class CustomerControllerIT extends AbstractIntegrationTest {
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
-
+        // Parse the created customer response to extract the customer ID for subsequent retrieval.
         JsonNode created = objectMapper.readTree(createdBody);
         long id = created.get("id").asLong();
 
@@ -59,6 +62,7 @@ class CustomerControllerIT extends AbstractIntegrationTest {
     }
 
     @Test
+    /// Test case to verify that creating a customer with a duplicate email address results in a Bad Request response.
     void shouldRejectDuplicateEmail() throws Exception {
         String email = "duplicate.customer." + UUID.randomUUID() + "@example.com";
 
@@ -82,5 +86,30 @@ class CustomerControllerIT extends AbstractIntegrationTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message")
                         .value("Customer with email already exists: " + email));
+    }
+
+
+
+    @Test
+    /// Test case to verify that creating a customer with invalid input data results in a Bad Request response with appropriate validation error messages.
+    void shouldRejectInvalidCustomerRequest() throws Exception {
+        String invalidJson = """
+            {
+            "firstName": "",
+            "lastName": "",
+            "email": "not-an-email",
+            "phone": "123"
+            }
+            """;
+
+        mvc.perform(post("/api/customers")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(invalidJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.error").value("Bad Request"))
+                .andExpect(jsonPath("$.message").value("Validation failed"))
+                .andExpect(jsonPath("$.path").value("/api/customers"))
+                .andExpect(jsonPath("$.fieldErrors").isArray());
     }
 }

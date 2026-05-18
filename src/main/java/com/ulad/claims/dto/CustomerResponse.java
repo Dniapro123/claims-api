@@ -2,6 +2,7 @@ package com.ulad.claims.dto;
 
 import java.time.Instant;
 
+/// DTO for representing customer details in API responses.
 public record CustomerResponse(
         Long id,
         String firstName,

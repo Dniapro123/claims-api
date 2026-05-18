@@ -14,6 +14,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+
+/// Entity class representing a customer in the insurance claims system.
+/// Contains fields for customer details such as first name, last name, email, phone, and creation timestamp.
+/// Also includes a one-to-many relationship with the Claim entity, representing the claims associated with the
 public class Customer {
 
     @Id

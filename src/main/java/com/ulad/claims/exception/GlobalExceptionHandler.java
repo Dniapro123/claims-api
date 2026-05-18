@@ -12,6 +12,10 @@ import java.time.Instant;
 import java.util.List;
 
 @RestControllerAdvice
+
+/// Global exception handler for the API. 
+// Catches specific exceptions and returns structured 
+// error responses with appropriate HTTP status codes.
 public class GlobalExceptionHandler {
 
   @ExceptionHandler(NotFoundException.class)
@@ -23,7 +27,7 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ApiError> handleBadRequest(BadRequestException ex, HttpServletRequest req) {
     return build(HttpStatus.BAD_REQUEST, ex.getMessage(), req.getRequestURI(), null);
   }
-
+// Handles validation errors and returns a structured response with field-specific error messages.
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<ApiError> handleValidation(MethodArgumentNotValidException ex, HttpServletRequest req) {
     List<ApiError.FieldErrorItem> fields = ex.getBindingResult().getFieldErrors().stream()

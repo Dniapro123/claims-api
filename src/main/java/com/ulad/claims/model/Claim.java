@@ -13,6 +13,10 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+
+// Entity class representing an insurance claim.
+// Contains fields for claim details such as title, description, amount, status, and timestamps.
+// Also includes a many-to-one relationship with the Customer entity.
 public class Claim {
 
   @Id

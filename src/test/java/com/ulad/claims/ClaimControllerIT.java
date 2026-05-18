@@ -14,6 +14,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @AutoConfigureMockMvc
+
+// Integration test class for the ClaimController. This class tests the creation and retrieval of claims, as well as validating status transitions.
 class ClaimControllerIT extends AbstractIntegrationTest {
 
   @Autowired

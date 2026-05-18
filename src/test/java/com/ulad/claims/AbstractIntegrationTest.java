@@ -5,5 +5,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
 @ActiveProfiles("test")
+// Abstract base class for integration tests in the Claims API application.
 public abstract class AbstractIntegrationTest {
 }

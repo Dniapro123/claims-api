@@ -5,6 +5,7 @@ package com.ulad.claims.model;
 // IN_REVIEW -> APPROVED / REJECTED
 // APPROVED / REJECTED are terminal states
 
+// Enum representing the status of a claim.
 public enum ClaimStatus {
   NEW,
   IN_REVIEW,
