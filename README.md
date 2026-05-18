@@ -5,6 +5,16 @@
 A portfolio backend project built with Java and Spring Boot.  
 The application simulates a small insurance claims management module with customers, claims, status workflow, validation, relational persistence, database migrations, and integration tests.
 
+## Live Demo
+
+Swagger UI:
+
+https://claims-api-production-29fa.up.railway.app/swagger-ui/index.html
+
+API Docs:
+
+https://claims-api-production-29fa.up.railway.app/v3/api-docs
+
 ## Tech Stack
 
 - Java 17
