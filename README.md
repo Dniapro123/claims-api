@@ -1,80 +1,254 @@
-# Claims API — Insurance Claims Management (Spring Boot)
 
-**Claims API** is a small Spring Boot REST service that simulates an insurance claims module.
-It allows users to create claims, browse them with pagination, fetch details, update claim status using business rules, and delete claims.
 
-The project is designed as a clean, portfolio-ready backend example: layered architecture, validation, consistent error handling, and Swagger/OpenAPI documentation.
+# Claims API
 
----
+A portfolio backend project built with Java and Spring Boot.  
+The application simulates a small insurance claims management module with customers, claims, status workflow, validation, relational persistence, database migrations, and integration tests.
 
-## Tech stack
-- **Java 17**
-- **Spring Boot 3** (Web, Validation)
-- **Spring Data JPA** + Hibernate
-- **H2 Database** (in-memory for local development)
-- **OpenAPI / Swagger UI** (springdoc)
-- **Gradle**
-- **Testing**: Spring Boot Test, JUnit 5, MockMvc
+## Tech Stack
 
----
+- Java 17
+- Spring Boot 3
+- Spring Web
+- Spring Data JPA
+- Hibernate
+- PostgreSQL
+- Flyway
+- Docker Compose
+- Gradle
+- Lombok
+- Swagger / OpenAPI
+- JUnit 5
+- MockMvc
+- GitHub Actions CI
 
-## Key features
-- CRUD operations for claims
-- **Status workflow with business rules** (controlled transitions)
-- Request validation (Bean Validation)
-- Global exception handling with consistent JSON error format
-- Pagination & sorting via query params (`page`, `size`, `sort`)
-- Swagger UI for manual API testing
+## Features
 
----
+- Customer management
+- Claim management
+- Customer-to-Claim relationship
+- Claim status workflow
+- Request validation
+- Global exception handling
+- Pagination and sorting
+- Filtering claims by status
+- PostgreSQL database
+- Versioned database migrations with Flyway
+- Integration tests for REST API endpoints
+- CI pipeline with GitHub Actions
 
-## Claim status workflow (business rules)
+## Domain Overview
 
-Supported statuses:
-- `NEW`
-- `IN_REVIEW`
-- `APPROVED`
-- `REJECTED`
+A customer can have multiple insurance claims.
 
-Allowed transitions:
-- `NEW -> IN_REVIEW` or `NEW -> REJECTED`
-- `IN_REVIEW -> APPROVED` or `IN_REVIEW -> REJECTED`
-- `APPROVED` and `REJECTED` are terminal (no transitions)
+A claim contains:
 
-If an invalid transition is requested (e.g. `NEW -> APPROVED`), the API returns **400 Bad Request**.
+- title
+- description
+- amount
+- status
+- creation timestamp
+- assigned customer
 
----
+Claim statuses follow a controlled workflow.
 
-## Architecture (high-level)
-The application follows a simple layered architecture:
+## API Endpoints
 
-- **Controller layer** (`controller/`)  
-  Exposes REST endpoints, validates requests (`@Valid`) and delegates to the service layer.
+### Customers
 
-- **Service layer** (`service/`)  
-  Contains business logic such as the claim **status workflow** and orchestrates repository calls.
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/customers` | Create customer |
+| GET | `/api/customers` | List customers |
+| GET | `/api/customers/{id}` | Get customer by ID |
+| PUT | `/api/customers/{id}` | Update customer |
+| DELETE | `/api/customers/{id}` | Delete customer |
 
-- **Repository layer** (`repository/`)  
-  Spring Data JPA repositories + filtering (Specifications).
+### Claims
 
-- **Domain model** (`model/`)  
-  JPA entities and enums (`ClaimStatus`) with explicit transition rules.
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/claims` | Create claim |
+| GET | `/api/claims` | List claims |
+| GET | `/api/claims/{id}` | Get claim by ID |
+| PUT | `/api/claims/{id}/status` | Update claim status |
+| DELETE | `/api/claims/{id}` | Delete claim |
 
-- **DTOs** (`dto/`)  
-  Request/response models to keep API contracts stable and avoid exposing entities.
+## Example Request
 
-- **Error handling** (`exception/`)  
-  Centralized `@RestControllerAdvice` that returns consistent JSON error responses (400/404/500).
----
+Create customer:
 
-## Run locally
+```json
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "email": "john.doe@example.com",
+  "phone": "+48123123123"
+}
+````
 
-### Requirements
-- Java **17** installed (project uses toolchain)
-- No database setup required (H2 is used by default)
+Create claim:
 
-### Start the application
+```json
+{
+  "title": "Broken laptop",
+  "description": "Screen does not work",
+  "amount": 1200,
+  "customerId": 1
+}
+```
+
+Update claim status:
+
+```json
+{
+  "status": "IN_REVIEW"
+}
+```
+
+## Error Response Example
+
+```json
+{
+  "timestamp": "2026-05-18T07:35:27.695Z",
+  "status": 400,
+  "error": "Bad Request",
+  "message": "Validation failed",
+  "path": "/api/customers",
+  "fieldErrors": [
+    {
+      "field": "email",
+      "message": "must be a well-formed email address"
+    }
+  ]
+}
+```
+
+## Local Development
+
+### Prerequisites
+
+* Java 17
+* Docker
+* Docker Compose
+
+### Start PostgreSQL
+
 ```bash
-./gradlew bootRun
+docker compose up -d
+```
 
-./gradlew test
+### Run the application
+
+```bash
+./gradlew bootRun --args='--spring.profiles.active=dev'
+```
+
+On Windows PowerShell:
+
+```powershell
+.\gradlew.bat bootRun --args='--spring.profiles.active=dev'
+```
+
+### Run tests
+
+```bash
+./gradlew clean test
+```
+
+On Windows PowerShell:
+
+```powershell
+.\gradlew.bat clean test
+```
+
+## Database Migrations
+
+Database schema is managed by Flyway.
+
+Migration files are located in:
+
+```text
+src/main/resources/db/migration
+```
+
+Current migrations:
+
+* `V1__create_claims_table.sql`
+* `V2__create_customers_and_link_claims.sql`
+
+Hibernate is configured with:
+
+```yaml
+spring.jpa.hibernate.ddl-auto: validate
+```
+
+This means Hibernate validates the schema but does not generate or update tables automatically.
+
+## Swagger / OpenAPI
+
+After starting the application, Swagger UI is available at:
+
+```text
+http://localhost:8080/swagger-ui/index.html
+```
+
+OpenAPI docs:
+
+```text
+http://localhost:8080/v3/api-docs
+```
+
+## CI
+
+This project uses GitHub Actions to run tests automatically on every push and pull request to `main`.
+
+Workflow file:
+
+```text
+.github/workflows/ci.yml
+```
+
+## Project Structure
+
+```text
+src
+├── main
+│   ├── java/com/ulad/claims
+│   │   ├── controller
+│   │   ├── dto
+│   │   ├── exception
+│   │   ├── model
+│   │   ├── repository
+│   │   └── service
+│   └── resources
+│       ├── db/migration
+│       ├── application.yml
+│       ├── application-dev.yml
+│       └── application-test.yml
+└── test
+    └── java/com/ulad/claims
+```
+
+## Why This Project
+
+This project was created as a backend portfolio application.
+The goal was to go beyond a simple CRUD app and demonstrate practical backend skills:
+
+* designing REST APIs
+* working with relational data
+* handling validation and errors
+* managing database schema changes
+* writing integration tests
+* using Docker and CI
+* keeping a clean layered architecture
+
+## Author
+
+Uladzislau Budziankou
+
+
+
+
+
+
