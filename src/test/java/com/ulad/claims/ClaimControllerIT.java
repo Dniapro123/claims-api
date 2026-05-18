@@ -12,9 +12,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
+
 @AutoConfigureMockMvc
-class ClaimControllerIT {
+class ClaimControllerIT extends AbstractIntegrationTest {
 
   @Autowired
   MockMvc mvc;
@@ -26,12 +26,13 @@ class ClaimControllerIT {
   void shouldCreateAndFetchClaim() throws Exception {
     // create
     String createJson = """
-        {
-          "title": "Broken laptop",
-          "description": "Screen does not work",
-          "amount": 1200
-        }
-        """;
+    {
+      "title": "Broken laptop",
+      "description": "Screen does not work",
+      "amount": 1200,
+      "customerId": 1
+    }
+    """;
 
     String createdBody = mvc.perform(post("/api/claims")
             .contentType(MediaType.APPLICATION_JSON)
@@ -59,13 +60,14 @@ class ClaimControllerIT {
   @Test
   void shouldRejectInvalidStatusTransition() throws Exception {
     // create
-    String createJson = """
-        {
-          "title": "Phone damage",
-          "description": "Cracked screen",
-          "amount": 200
-        }
-        """;
+   String createJson = """
+    {
+      "title": "Phone damage",
+      "description": "Cracked screen",
+      "amount": 200,
+      "customerId": 1
+    }
+    """;
 
     String createdBody = mvc.perform(post("/api/claims")
             .contentType(MediaType.APPLICATION_JSON)

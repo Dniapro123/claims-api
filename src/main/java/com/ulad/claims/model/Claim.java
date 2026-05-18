@@ -8,8 +8,10 @@ import java.time.Instant;
 
 @Entity
 @Table(name = "claims")
-@Getter @Setter
-@NoArgsConstructor @AllArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class Claim {
 
@@ -32,6 +34,10 @@ public class Claim {
 
   @Column(nullable = false, updatable = false)
   private Instant createdAt;
+
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "customer_id", nullable = false)
+  private Customer customer;
 
   @PrePersist
   void onCreate() {
